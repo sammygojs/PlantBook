@@ -262,6 +262,7 @@ const insertPlantsInList = (plants) => {
       plantName.className = "card-title";
       const plantNameLink = document.createElement("a");
 
+      // Like button
       const likeButton = document.createElement("button");
       likeButton.className = "like-button";
       likeButton.setAttribute("data-plantid", plant.plantid);
