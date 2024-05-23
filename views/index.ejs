@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Plant Recognition</title>
+  <link rel="stylesheet" href="/stylesheets/style.css" />
+  <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.css" />
+  <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.rtl.css" />
+  <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap-grid.css" />
+  <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap-grid.rtl.css" />
+  <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap-reboot.css" />
+  <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap-reboot.rtl.css" />
+  <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap-utilities.css" />
+  <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap-utilities.rtl.css" />
+  <script src="/javascripts/index.js"></script>
+  <script src="/node_modules/bootstrap/dist/js/bootstrap.js"></script>
+  <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+  <script src="/node_modules/bootstrap/dist/js/bootstrap.esm.js"></script>
+  <link rel="manifest" href="/manifest.json">
+</head>
+<style>
+  .like-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  color: grey; /* Default color when not liked */
+  transition: color 0.3s ease;
+}
+
+.like-button.liked {
+  color: darkgreen; /* Color when liked */
+}
+
+.like-button svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+</style>
+
+<body style="background-color: #e2e2e2">
+  <!--        Navbar-->
+  <%- include('navbar.ejs') %>
+
+
+    <!-- New post modal -->
+    <div class="modal fade" id="newPostModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+      aria-labelledby="newPostModal" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-2" id="staticBackdropLabel">
+              Add a new plant to the list!
+            </h1>
+          </div>
+          <div class="modal-body">
+            <form id="plantForm" enctype="multipart/form-data" method="POST" action="/api/plantCreate"
+              onsubmit="return validateForm()">
+              <!-- Name of the plant -->
+              <label for="nameOfPlant" class="form-label">Name of the plant <span style="color: red">*</span></label>
+              <input type="text" class="form-control" id="nameOfPlant" name="name"
+                placeholder="Please enter the name of the plant" required />
+
+              <!-- Upload Image -->
+              <label for="uploadImage" class="form-label my-2">Upload image <span style="color: red">*</span></label>
+              <div class="d-flex align-items-center">
+                <label for="fileInput" class="btn btn-primary">
+                  Select from disk
+                  <input type="file" id="fileInput" name="image" class="d-none"
+                    accept="image/jpeg, image/png, image/gif" onchange="displayFileName()" />
+                </label>
+                <span id="fileNameDisplay"></span>
+              </div>
+
+              <!-- User nickname -->
+              <label for="userNickname" class="form-label my-2">User nickname <span style="color: red">*</span></label>
+              <input type="text" class="form-control" id="userNickname" name="createdby"
+                placeholder="Please enter your nickname" required>
+
+              <!-- Date and time of plant seen -->
+              <label for="dateAndTime" class="form-label my-2">Date and time plant was seen
+                <span style="color: red">*</span></label>
+              <input type="datetime-local" id="dateTimePickerInput" class="form-control" name="date_time_plant_seen"
+                required />
+
+              <!-- Plant description -->
+              <label for="plantDescription" class="form-label my-2">Plant description <span
+                  style="color: red">*</span></label>
+              <input type="text" class="form-control" id="plantDescription" name="description"
+                placeholder="Enter plant description" required />
+
+              <!-- Plant size -->
+              <!-- Plant Height -->
+              <label for="plantHeight" class="form-label my-2">Plant Height <span style="color: red">*</span></label>
+              <input type="number" class="form-control" id="plantHeight"
+                placeholder="Enter estimated plant height in meters" name="height" required />
+
+              <!-- Plant spread -->
+              <label for="plantSpread" class="form-label my-2">Plant Spread <span style="color: red">*</span></label>
+              <input type="number" class="form-control" id="plantSpread"
+                placeholder="Enter estimated plant spread in meters" name="spread" required />
+
+              <!-- Characteristics -->
+              <label for="Characteristics" class="form-label my-2">Characteristics</label>
+
+              <!-- Plant flowers -->
+              <div class="d-flex justify-content-between align-items-center form-check form-switch">
+                <label class="form-label" for="flowerSwitch">Does the plant have any flowers?</label>
+                <input class="form-check-input mx-5" type="checkbox" role="switch" id="flowerSwitch" name="has_flowers"
+                  value="true" />
+              </div>
+
+              <!-- Plant leaves  -->
+              <div class="d-flex justify-content-between align-items-center form-check form-switch">
+                <label class="form-label" for="leavesSwitch">Does the plant have leaves?</label>
+                <input class="form-check-input mx-5" type="checkbox" role="switch" id="leavesSwitch" name="has_leaves"
+                  value="true" />
+              </div>
+
+              <!-- Plant fruit seeds -->
+              <div class="d-flex justify-content-between align-items-center form-check form-switch">
+                <label class="form-check-label" for="fruitSeeds">Does the plant have fruits or seeds?</label>
+                <input class="form-check-input mx-5" type="checkbox" role="switch" id="fruitSeeds"
+                  name="has_fruitsorseeds" value="true" />
+              </div>
+
+              <!-- Color of flowers -->
+              <div class="d-flex justify-content-between align-items-center form-check my-1">
+                <label class="form-check-label mx-3" for="flowerColor">Color of Flower</label>
+                <input class="form-control mx-5" type="text" role="switch" id="flowerColor" style="width: 150px"
+                  placeholder="Enter flower color" name="flower_color" />
+              </div>
+
+              <!-- Lat / Long -->
+              <input type="hidden" id="latitudeInput" name="latitude" />
+              <input type="hidden" id="longitudeInput" name="longitude" />
+
+              <!-- Post button -->
+              <button type="submit" class="btn btn-primary my-3 custom-button" style="width: 100%" id="postButton"
+                name="submit">
+                Post!
+              </button>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End of new post modal -->
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+      aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-2" id="staticBackdropLabel">
+              Welcome back!
+              <br />
+              Login here.
+            </h1>
+          </div>
+          <div class="modal-body">
+            <label for="username" class="form-label">Username</label>
+            <input type="email" class="form-control" id="username" placeholder="Please enter your username" />
+            <button id="loginButton" type="button" class="btn btn-primary my-3" onclick="login()"
+              style="width: 100%; background-color: #22338f">
+              Log in!
+            </button>
+            <button type="button" id="logoutButton" class="btn btn-secondary" onclick="logout()" style="display: none;">
+              Logout
+            </button>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End of login modal -->
+
+    <!-- Suggest modal -->
+    <div id="suggestModal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <!-- Modal header -->
+          <div class="modal-header">
+            <h2>Suggestion for plant: <br><span id="plantName"></span>(id: <span id="plantID"></span>)</h2>
+          </div>
+          <!-- Modal body -->
+          <div class="modal-body">
+            <form id="suggestionForm" method="POST" enctype="application/x-www-form-urlencoded">
+              <!-- PlantID to send to the controller -->
+              <input type="hidden" name="plantid" id="plantIDInput" value="">
+              <!-- Username -->
+
+              <label for="suggesterUsername" class="form-label">Username</label>
+              <input type="text" class="form-control" id="suggesterUsername" placeholder="Please enter your username" />
+              <!-- Suggestion -->
+              <label for="suggestion" class="form-label">Suggestion</label>
+              <input type="text" class="form-control" id="suggestion"
+                placeholder="Please enter your suggestion for this plant" />
+              <button type="submit" class="btn btn-primary my-3" style="width: 100%; background-color: #22338f">
+                Suggest!
+              </button>
+            </form>
+          </div>
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <button type="button" id="closeModalButton" class="btn btn-secondary" data-bs-dismiss="modal">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- End of suggest modal -->
+
+    <div class="mt-4 w-60">
+
+      <div id="plant_list" class="d-flex flex-column justify-content-center align-items-center"></div>
+    </div>
+
+</body>
+
+<script src="/util/idb-utility.js"></script>
+<script src="/util/index.js"></script>
+<script src="/util/insert.js"></script>
+
+<script>
+  function login() {
+    var username = document.getElementById("username").value;
+    if (username) {
+      localStorage.setItem("username", username);
+      document.getElementById("loginButton").style.display = 'none'; // Hide login button
+      document.getElementById("logoutButton").style.display = 'block'; // Show logout button
+      location.reload()
+    } else {
+      alert("Please enter a username.");
+    }
+  }
+
+  function logout() {
+    localStorage.removeItem("username");
+    document.getElementById("loginButton").style.display = 'block'; // Show login button
+    document.getElementById("logoutButton").style.display = 'none'; // Hide logout button
+  }
+
+  // Check if user is already logged in on page load
+  document.addEventListener("DOMContentLoaded", function () {
+    var storedUsername = localStorage.getItem("username");
+    if (storedUsername) {
+      document.getElementById("loginButton").style.display = 'none'; // Hide login button
+      document.getElementById("logoutButton").style.display = 'block'; // Show logout button
+    } else {
+      document.getElementById("loginButton").style.display = 'block'; // Show login button
+      document.getElementById("logoutButton").style.display = 'none'; // Hide logout button
+    }
+  });
+</script>
+</html>

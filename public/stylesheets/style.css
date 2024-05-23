@@ -1,0 +1,82 @@
+body {
+  background-color: #0e0e10;
+}
+
+.card {
+  padding: 30px;
+}
+
+.custom-navbar-color {
+  background-color: #0e0e10;
+}
+
+.custom_bg_color {
+  background-color: #e2e2e2;
+}
+
+.custom_login_button_color {
+  background-color: #22338f;
+  border-color: #22338f; 
+  color: #ffffff;
+}
+
+.custom-button {
+  background-color: #22338f;
+  transition: background-color 0.3s;
+}
+
+.custom-button:hover {
+  background-color: #e2e2e2; 
+}
+
+.custom-ul-text-white li.nav-item a.nav-link {
+  color: white; 
+}
+
+
+.boxed {
+  width: 100%;
+  padding:10px;
+}
+.bottom {
+  position: absolute;
+  bottom: 10px;
+  width: 90%;
+}
+
+/* For larger screens, hide the footer by default */
+@media (min-width: 992px) {
+  .footer {
+    display: none;
+  }
+}
+
+/* For smaller screens, show the footer at the bottom of the viewport */
+@media (max-width: 991.98px) {
+  .footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* Ensure it's on top of other content */
+  }
+}
+
+@font-face {
+  font-family: "Growing Garden";
+  src: url("/fonts/GrowingGarden.ttf") format("truetype");
+  font-weight: normal;
+  font-size: normal;
+}
+
+
+.suggestionsBody{
+  height: 0;
+  overflow: hidden;
+  transition: height 0.3 ease;
+}
+
+.suggestionsBody.expanded{
+  height: auto;
+  overflow: visible;
+}

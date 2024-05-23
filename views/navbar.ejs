@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Plant Recognition</title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <link
+      rel="stylesheet"
+      href="/node_modules/bootstrap/dist/css/bootstrap.css"
+    />
+    <link
+      rel="stylesheet"
+      href="/node_modules/bootstrap/dist/css/bootstrap.rtl.css"
+    />
+    <link
+      rel="stylesheet"
+      href="/node_modules/bootstrap/dist/css/bootstrap-grid.css"
+    />
+    <link
+      rel="stylesheet"
+      href="/node_modules/bootstrap/dist/css/bootstrap-grid.rtl.css"
+    />
+    <link
+      rel="stylesheet"
+      href="/node_modules/bootstrap/dist/css/bootstrap-reboot.css"
+    />
+    <link
+      rel="stylesheet"
+      href="/node_modules/bootstrap/dist/css/bootstrap-reboot.rtl.css"
+    />
+    <link
+      rel="stylesheet"
+      href="/node_modules/bootstrap/dist/css/bootstrap-utilities.css"
+    />
+    <link
+      rel="stylesheet"
+      href="/node_modules/bootstrap/dist/css/bootstrap-utilities.rtl.css"
+    />
+    <script src="/javascripts/navbar.js"></script>
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.esm.js"></script>
+  </head>
+  <body style="background-color: #e2e2e2">
+    <nav class="navbar navbar-expand-lg navbar-light custom-navbar-color">
+      <div
+        class="container-fluid d-flex justify-content-between align-items-center"
+      >
+      
+        <div class="d-flex flex-row align-items-center">
+          <img src="images/plant.gif" class="" alt="" />
+          <h3 class="navbar-brand my-2 mx-0 text-white text-center">
+            <!-- <a href="/"> -->
+            Plant Recognition
+          <!-- </a> -->
+          </h3>
+        </div>
+
+        <!-- Hamburger Icon -->
+        <button
+          class="navbar-toggler"
+          type="button"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+          id="navbar-toggler-btn"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            x="0px"
+            y="0px"
+            width="30"
+            height="30"
+            viewBox="0 0 30 30"
+            style="fill: #ffffff"
+          >
+            <path
+              d="M 3 7 A 1.0001 1.0001 0 1 0 3 9 L 27 9 A 1.0001 1.0001 0 1 0 27 7 L 3 7 z M 3 14 A 1.0001 1.0001 0 1 0 3 16 L 27 16 A 1.0001 1.0001 0 1 0 27 14 L 3 14 z M 3 21 A 1.0001 1.0001 0 1 0 3 23 L 27 23 A 1.0001 1.0001 0 1 0 27 21 L 3 21 z"
+            ></path>
+          </svg>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <form role="search" class="ms-auto">
+            <div class="d-flex justify-content-center align-items-center my-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                x="0px"
+                y="0px"
+                width="30"
+                height="30"
+                viewBox="0 0 50 50"
+                style="fill: #ffffff"
+              >
+                <path
+                  d="M 21 3 C 11.621094 3 4 10.621094 4 20 C 4 29.378906 11.621094 37 21 37 C 24.710938 37 28.140625 35.804688 30.9375 33.78125 L 44.09375 46.90625 L 46.90625 44.09375 L 33.90625 31.0625 C 36.460938 28.085938 38 24.222656 38 20 C 38 10.621094 30.378906 3 21 3 Z M 21 5 C 29.296875 5 36 11.703125 36 20 C 36 28.296875 29.296875 35 21 35 C 12.703125 35 6 28.296875 6 20 C 6 11.703125 12.703125 5 21 5 Z"
+                ></path>
+              </svg>
+              <input
+                class="form-control me-2 rounded-pill"
+                id="searchBar"
+                style="width: 400px"
+                type="search"
+                placeholder="Search"
+                aria-label="Search"
+              />
+              <button
+                type="button"
+                class="btn btn-primary rounded-pill"
+                onclick="searchPlants()"
+              >
+                Search
+              </button>
+            </div>
+          </form>
+          
+          <form role="search">
+            <div class="d-flex justify-content-center align-items-center">
+              <p class="text-white mx-0 mb-0">Sort</p>
+              <div
+                class="dropdown d-flex justify-content-center align-items-center"
+              >
+                <svg
+                  width="40"
+                  height="40"
+                  fill="white"
+                  class="bi bi-filter-left mx-3 dropdown-toggle"
+                  viewBox="0 0 16 16"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <path
+                    d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5m0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5"
+                  ></path>
+                </svg>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a
+                      class="dropdown-item text-center"
+                      href="#"
+                      onclick="sortPlants('newest')"
+                      >Oldest First</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      class="dropdown-item text-center"
+                      href="#"
+                      onclick="sortPlants('oldest')"
+                      >Newest First</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      class="dropdown-item text-center"
+                      href="#"
+                      onclick="sortPlants('name')"
+                      >Sort by Name</a
+                    >
+                  </li>
+                </ul>
+              </div>
+              <button
+                type="button"
+                class="btn btn-success rounded-pill d-flex justify-content-center align-items-center mx-2"
+                style="width: 120px; height: 35px"
+                data-bs-toggle="modal"
+                data-bs-target="#newPostModal"
+                id="newPostButton"
+              >
+                New post
+              </button>
+
+                    <button
+                            id = "loginButton"
+                            type="button"
+                            style="display: none"
+                            class="btn btn-primary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#staticBackdrop"
+                    >
+                        Login
+                    </button>
+                    <button type="button" id="logoutButton" class="btn btn-primary" onclick="logout()" style="display: none;">
+                        Logout
+                    </button>
+                </div>
+            </form>
+
+        </div>
+      </div>
+    </nav>
+  </body>
+  <script>    
+
+    function logout() {
+        localStorage.removeItem("username");
+        document.getElementById("loginButton").style.display = 'block'; // Show login button
+        document.getElementById("logoutButton").style.display = 'none'; // Hide logout button
+    }
+
+    // Check if user is already logged in on page load
+    document.addEventListener("DOMContentLoaded", function() {
+        var storedUsername = localStorage.getItem("username");
+        if (storedUsername) {
+            document.getElementById("loginButton").style.display = 'none'; // Hide login button
+            document.getElementById("logoutButton").style.display = 'block'; // Show logout button
+        } else {
+            document.getElementById("loginButton").style.display = 'block'; // Show login button
+            document.getElementById("logoutButton").style.display = 'none'; // Hide logout button
+        }
+    });
+</script>
+</html>

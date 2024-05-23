@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plant Details</title>
+  <link rel="stylesheet" href="/stylesheets/style.css" />
+  <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.css" />
+  <link rel="stylesheet" href="/node_modules/bootstrap-icons/font/bootstrap-icons.min.css" />
+  <script src="/node_modules/bootstrap/dist/js/bootstrap.js"></script>
+  <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+  <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  <link rel="stylesheet" href="/stylesheets/style.css" />
+  <script src="/javascripts/index.js"></script>
+  <script src="/util/chat.js"></script>
+  <script src="/util/idb-utility.js"></script>
+  <script src="/javascripts/plantdetails.js"></script>
+  <script src="/util/updateDetails.js"></script>
+</head>
+
+<body onload="init()" style="background-color: #e2e2e2">
+  <div class="container" style="margin-top: 20px">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header" style="font-weight: bold">
+            Plant Details
+          </div>
+
+          <div class="card-body" style="padding: 20px">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex justify-content-between align-items-center ">Name: <%= plantDetails.name
+                  %>
+                  <span class="edit-description-icon" id="editButton" onclick="openEditNameModel()"
+                    style="cursor: pointer;">
+                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="25" height="25" viewBox="0 0 50 50">
+                      <path
+                        d="M 43.125 2 C 41.878906 2 40.636719 2.488281 39.6875 3.4375 L 38.875 4.25 L 45.75 11.125 C 45.746094 11.128906 46.5625 10.3125 46.5625 10.3125 C 48.464844 8.410156 48.460938 5.335938 46.5625 3.4375 C 45.609375 2.488281 44.371094 2 43.125 2 Z M 37.34375 6.03125 C 37.117188 6.0625 36.90625 6.175781 36.75 6.34375 L 4.3125 38.8125 C 4.183594 38.929688 4.085938 39.082031 4.03125 39.25 L 2.03125 46.75 C 1.941406 47.09375 2.042969 47.457031 2.292969 47.707031 C 2.542969 47.957031 2.90625 48.058594 3.25 47.96875 L 10.75 45.96875 C 10.917969 45.914063 11.070313 45.816406 11.1875 45.6875 L 43.65625 13.25 C 44.054688 12.863281 44.058594 12.226563 43.671875 11.828125 C 43.285156 11.429688 42.648438 11.425781 42.25 11.8125 L 9.96875 44.09375 L 5.90625 40.03125 L 38.1875 7.75 C 38.488281 7.460938 38.578125 7.011719 38.410156 6.628906 C 38.242188 6.246094 37.855469 6.007813 37.4375 6.03125 C 37.40625 6.03125 37.375 6.03125 37.34375 6.03125 Z">
+                      </path>
+                    </svg>
+                  </span>
+              </li>
+              <li class="list-group-item ">
+                Plant description: <%= plantDetails.description %>
+              </li>
+              <li class="list-group-item">
+                Height: <%= plantDetails.height %> cm
+              </li>
+              <li class="list-group-item">
+                Spread: <%= plantDetails.spread %> cm
+              </li>
+              <li class="list-group-item">
+                Has Leaves: <%= plantDetails.has_leaves ? 'Yes' : 'No' %>
+              </li>
+              <li class="list-group-item">
+                Has Fruits or Seeds: <%= plantDetails.has_fruitsorseeds ? 'Yes' : 'No' %>
+              </li>
+              <li class="list-group-item">
+                Flower Color: <%= plantDetails.flower_color %>
+              </li>
+              <li class="list-group-item">
+                Date/Time Seen: <%= plantDetails.date_time_plant_seen.toLocaleString() %>
+              </li>
+              <li class="list-group-item">
+                Identification Status: <%= plantDetails.plantIdentificationStatus ? 'Completed' : 'In-Progress' %>
+              </li>
+              <li class="list-group-item" id="completeIDButton">
+                <input type="hidden" name="plantid" id="plantidInput" value="<%=
+                  plantDetails.plantid %>">
+                <button type="button" class="btn btn-primary" onclick="completeIdentification()" <% if
+                  (plantDetails.plantIdentificationStatus) { %>
+                  style="display: none"
+                  <% } %>>Complete identification
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Edit name & description Modal -->
+
+        <div class="modal" id="editNameDescModal">
+          <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+              <!-- Modal header -->
+              <div class="modal-header">
+                <h4 class="modal-title fs-2">
+                  Edit plant name & description
+                </h4>
+              </div>
+              <!-- Modal body -->
+              <div class="modal-body">
+                <label for="editname" class="form-label">Edit plant name</label>
+                <input type="text" id="editedname" class="form-control" value="<%= plantDetails.name %>">
+                <label for="editdescription" class="form-label">Edit plant description</label>
+                <input type="text" id="editeddescription" class="form-control" value="<%= plantDetails.description %>">
+                <button type="button" style="width: 100%; background-color: #22338f" id="submitNewEditButton"
+                  class="btn btn-primary my-3" onclick="saveEditedChanges('<%= plantDetails.plantid %>')">Save
+                  Changes!</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- End of edit name & description modal -->
+
+        <div class="card">
+          <div class="card-header" style="font-weight: bold">
+            Plant Details from DB Pedia
+          </div>
+
+          <div class="card-body" style="padding: 20px">
+            <div class="card-body" style="padding: 20px">
+              <% if (plantDetailsDB && plantDetailsDB.label && plantDetailsDB.description) { %>
+                <ul class="list-group">
+                  <li class="list-group-item">
+                    Name: <%= plantDetailsDB.label %>
+                  </li>
+                  <li class="list-group-item">
+                    Description: <%= plantDetailsDB.description %>
+                  </li>
+                  <li class="list-group-item">
+                    URL to DBPedia:
+                    <a href="<%= plantDetailsDB.url %>" target="_blank">Visit DBpedia Page</a>
+                  </li>
+                </ul>
+                <% } else { %>
+                  <div class="alert alert-warning" role="alert">
+                    Plant details not found.
+                  </div>
+                  <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header" style="font-weight: bold">
+            Join the discussion
+          </div>
+          <div class="card-body">
+            <div id="who_you_are" style="display: inline"></div>
+            , you are in room:
+            <div id="in_room" style="display: inline"></div>
+          </div>
+          <div id="history" class="boxed"></div>
+          <form id="discissionForm" onsubmit="return false;">
+            <div class="form-group">
+              <textarea class="form-control" id="chat_input" name="chat_input" rows="1"></textarea>
+              <button type="button" onclick="sendChatText()" class="btn btn-primary"
+                style="margin-top: 20px; float: right">
+                <i class="bi bi-send-fill"></i>
+                Send
+              </button>
+            </div>
+          </form>
+        </div>
+        <!-- Suggestions -->
+        <div class="card" id="suggestionsCard">
+          <div class="card-header d-flex justify-content-between align-items-center" style="font-weight: bold">
+            <span>Suggestions</span>
+            <span id="toggleIcon">
+              <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="m19 9-7 7-7-7" />
+              </svg>
+            </span>
+          </div>
+          <div class="suggestionsBody">
+            <% if(plantDetails.identifications.length===0) { %>
+              <div class="d-flex justify-content-center align-items-center">
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                  <img src="/images/noidentifications.svg" alt="No Identifications found"
+                    style="height: 70%; width: 70%" />
+                  <h1 class="" style="
+                    font-family: 'Growing Garden', sans-serif;
+                    font-size: 3em;
+                  ">
+                    No suggestions!
+                  </h1>
+                </div>
+              </div>
+              <% } else { %>
+                <% plantDetails.identifications.forEach(identifications=> { %>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      <div class="row">
+                        <span>
+                          Suggested name: <%= identifications.suggestedname %>
+                        </span>
+                        <span>Identified by: <%= identifications.identifiedby %></span>
+                      </div>
+                      <div class="col-auto">
+                        <span><button type="button" class="btn btn-primary approve-button"
+                            style="width: 100px; height: 40px" id="approveSuggestion"
+                            data-plantid="<%= plantDetails.plantid %>"
+                            data-identifiedby="<%= identifications.suggestedname%>" <% if
+                            (plantDetails.plantIdentificationStatus) { %>
+                            disabled
+                            <% } %>
+                              >
+                              Approve
+                          </button>
+                        </span>
+                      </div>
+                    </li>
+                    <% }); %>
+                      <% } %>
+                  </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    window.addEventListener('load', function () {
+      const loggedInUser = localStorage.getItem('username');
+      const plantUser = '<%= plantDetails.createdby %>';
+      if (loggedInUser === plantUser) {
+        document.getElementById('suggestionsCard').style.display = 'block';
+        document.getElementById('editButton').style.display = 'block';
+        document.getElementById('completeIDButton').style.display = 'block';
+      } else {
+        document.getElementById('suggestionsCard').style.display = 'none';
+        document.getElementById('editButton').style.display = 'none';
+        document.getElementById('completeIDButton').style.display = 'none';
+      }
+    });
+  </script>
+</body>
+
+</html>
